@@ -10,7 +10,7 @@
 # Copyright 8.3.2002 Mietta Lennes
 #
 
-#This a modified version of Lennes' original script
+#This a modified version of Lennes' script
 #The one allows you to specify the directory of sound files and their corresponding textgrids
 #The script will cut all the sound files for you and save the cutted files into another folder
 #There's no need to import anything to praat anymore.
@@ -22,7 +22,7 @@
 #subject1-please call.wav
 #subject1-ask her.wav
 #
-#Sep.17, Zhiyan Gao
+#Sep.17, 2016, Zhiyan Gao
 
 form Save intervals to small WAV sound files
 	comment Which IntervalTier in this TextGrid would you like to process?
@@ -59,6 +59,8 @@ for iLongSound from 1 to nLongSounds
 	textGrid_name$ = sound_name$ - "wav" + "TextGrid"
 	longsound$ = sound_folder$ + "/" + sound_name$
 	textGrid$ = textGrid_folder$ + "/" + textGrid_name$
+	start_from = 1
+	end_at = 0
 	if fileReadable(textGrid$)
 		call treatment
 	endif

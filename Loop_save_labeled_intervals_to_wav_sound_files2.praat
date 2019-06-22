@@ -10,7 +10,7 @@
 # Copyright 8.3.2002 Mietta Lennes
 #
 
-#This a modified version of Lennes' original script
+#This a modified version of Lennes' script
 #The one allows you to specify the directory of sound files and their corresponding textgrids
 #The script will cut all the sound files for you and save the cutted files into another folder
 #There's no need to import anything to praat anymore.
@@ -22,13 +22,13 @@
 #subject1-please call.wav
 #subject1-ask her.wav
 #
-#Sep.17, Zhiyan Gao
+#Sep.17, 2016, Zhiyan Gao
 
 form Save intervals to small WAV sound files
 	comment Which IntervalTier in this TextGrid would you like to process?
 	integer Tier 1
-	sentence Sound_folder C:\Users\George\Desktop\longfiles\
-	sentence TextGrid_folder C:\Users\George\Desktop\longfiles\
+	sentence Sound_folder private_speech/
+	sentence TextGrid_folder private_speech/
 	comment Starting and ending at which interval? 
 	integer Start_from 1
 	integer End_at_(0=last) 0
@@ -38,7 +38,7 @@ form Save intervals to small WAV sound files
 	comment Give a small margin for the files if you like:
 	positive Margin_(seconds) 0.01
 	comment Give the folder where to save the sound files:
-	sentence Folder C:\Users\George\Desktop\longfiles\test\
+	sentence Folder private_speech/seg/
 	comment Give an optional prefix for all filenames:
 	sentence Prefix 
 	comment Give an optional suffix for all filenames (.wav will be added anyway):
@@ -59,6 +59,8 @@ for iLongSound from 1 to nLongSounds
 	textGrid_name$ = sound_name$ - "wav" + "TextGrid"
 	longsound$ = sound_folder$ + "/" + sound_name$
 	textGrid$ = textGrid_folder$ + "/" + textGrid_name$
+	start_from = 1
+	end_at = 0
 	if fileReadable(textGrid$)
 		call treatment
 	endif
@@ -116,6 +118,8 @@ procedure treatment
 		select myTextGrid
 		intname$ = ""
 		intname$ = Get label of interval... tier interval
+		intname2$ = ""
+		intname2$ = Get label of interval... tier 2
 		check = 0
 		if intname$ = "xxx" and exclude_intervals_labeled_as_xxx = 1
 			check = 1
@@ -144,11 +148,11 @@ procedure treatment
 			select LongSound 'soundname$'
 			Extract part... intervalstart intervalend no
 			filename$ = intname$
-			intervalfile$ = "'folder$'" + "'soundname$'" + "-" + "'filename$'" + "'suffix$'" + ".wav"
+			intervalfile$ = "'folder$'" + "'soundname$'" + "-" + "'filename$'" + "'intname2$'"+"'suffix$'" + ".wav"
 			indexnumber = 0
 			while fileReadable (intervalfile$)
 				indexnumber = indexnumber + 1
-				intervalfile$ = "'folder$'" + "'soundname$'" + "'-'"+"'filename$'" + "'suffix$''indexnumber'" + ".wav"
+				intervalfile$ = "'folder$'" + "'soundname$'" + "-"+"'filename$'" + "'intname2$'"+"'suffix$''indexnumber'" + ".wav"
 			endwhile
 			Write to WAV file... 'intervalfile$'
 			Remove

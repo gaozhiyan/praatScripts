@@ -27,8 +27,8 @@
 form Save intervals to small WAV sound files
 	comment Which IntervalTier in this TextGrid would you like to process?
 	integer Tier 1
-	sentence Sound_folder C:\Users\George\Desktop\longfiles\
-	sentence TextGrid_folder C:\Users\George\Desktop\longfiles\
+	sentence Sound_folder private_speech/
+	sentence TextGrid_folder private_speech/
 	comment Starting and ending at which interval? 
 	integer Start_from 1
 	integer End_at_(0=last) 0
@@ -38,7 +38,7 @@ form Save intervals to small WAV sound files
 	comment Give a small margin for the files if you like:
 	positive Margin_(seconds) 0.01
 	comment Give the folder where to save the sound files:
-	sentence Folder C:\Users\George\Desktop\longfiles\test\
+	sentence Folder private_speech/seg/
 	comment Give an optional prefix for all filenames:
 	sentence Prefix 
 	comment Give an optional suffix for all filenames (.wav will be added anyway):
@@ -118,6 +118,8 @@ procedure treatment
 		select myTextGrid
 		intname$ = ""
 		intname$ = Get label of interval... tier interval
+		intname2$ = ""
+		intname2$ = Get label of interval... tier 2
 		check = 0
 		if intname$ = "xxx" and exclude_intervals_labeled_as_xxx = 1
 			check = 1
@@ -146,11 +148,11 @@ procedure treatment
 			select LongSound 'soundname$'
 			Extract part... intervalstart intervalend no
 			filename$ = intname$
-			intervalfile$ = "'folder$'" + "'soundname$'" + "-" + "'filename$'" + "'suffix$'" + ".wav"
+			intervalfile$ = "'folder$'" + "'soundname$'" + "-" + "'filename$'" + "'intname2$'"+"'suffix$'" + ".wav"
 			indexnumber = 0
 			while fileReadable (intervalfile$)
 				indexnumber = indexnumber + 1
-				intervalfile$ = "'folder$'" + "'soundname$'" + "'-'"+"'filename$'" + "'suffix$''indexnumber'" + ".wav"
+				intervalfile$ = "'folder$'" + "'soundname$'" + "-"+"'filename$'" + "'intname2$'"+"'suffix$''indexnumber'" + ".wav"
 			endwhile
 			Write to WAV file... 'intervalfile$'
 			Remove

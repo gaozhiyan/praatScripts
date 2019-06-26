@@ -1,0 +1,32 @@
+<?xml version='1.0' standalone='no'?>
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN'
+  'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
+
+   <title>consonant Table</title>
+   <g id='columnGroup' font-family="Times New Roman">
+      <text x='0' y='30' font-size='18px' text-anchor='middle'>
+         <tspan x='100' font-weight='bold' fill='crimson'>Sales</tspan>
+         <tspan x='100' dy='1.5em'>$ 223</tspan>
+         <tspan x='100' dy='1em'>$ 183</tspan>
+         <tspan x='100' dy='1em'>$ 277</tspan>
+         <tspan x='100' dy='1em'>$ 402</tspan>
+      </text>
+
+      <text x='200' y='30' font-size='18px' text-anchor='middle'>
+         <tspan x='200' font-weight='bold' fill='crimson'>Expenses</tspan>
+         <tspan x='200' dy='1.5em'>$ 195</tspan>
+         <tspan x='200' dy='1em'>$ 70</tspan>
+         <tspan x='200' dy='1em'>$ 88</tspan>
+         <tspan x='200' dy='1em'>$ 133</tspan>
+      </text>
+
+      <text x='300' y='30' font-size='18px' text-anchor='middle'>
+         <tspan x='300' font-weight='bold' fill='crimson'>Net</tspan>
+         <tspan x='300' dy='1.5em'>$ 28</tspan>
+         <tspan x='300' dy='1em'>$ 113</tspan>
+         <tspan x='300' dy='1em'>$ 189</tspan>
+         <tspan x='300' dy='1em'>$ 269</tspan>
+      </text>
+   </g>
+</svg>

@@ -16,80 +16,24 @@
 南通方言网定制输入法的拼音方案实际上是《汉语拼音方案》的方言版本，熟悉汉语拼音方案就能很快熟悉此方言拼音方案。跟市面上成熟的拼音输入法一样，我们的定制输入法凡是输入过的字词会有记忆功能，以后输入多音节词或短语时可以只输入音节首字母便可，非常省事。另外，我们还设置了一定的拼写容错功能，使得本输入法方案比较灵活、友好。例如：ji、seng、mi、zing、ling等错误拼法也能出字，阴入和阳入字吃不准，收尾的字母g或q弄混也不要紧。需要详细了解我们拼音方案的，建议查看完整方案，可在此处或到南通方言网在线浏览或下载。
 
 ### 声母：
+<img src="consonant.png" width="500">
 
-![](consonant.png)
+<br>
 ### 韵母：
 
 #### 阴声韵：
+<img src="vowel1.png" width="500">
 
-| 拼音 | 音标   | 例字             |
-|------|--------|------------------|
-| i    | /i, ɿ/ | ti提si丝         |
-| ri   | /ʒ̩/    | ri以bri比        |
-| u    | /ʋ/    | lu路zu朱         |
-| iu   | /y/    | yu有liu刘qu秋    |
-| riu  | /ʒ̩ʷ/   | riu鱼nriu女xru许 |
-| a    | /a/    | ha蟹ma买         |
-| ua   | /wa/   | hua淮kua快       |
-| iua  | /ɥa/   | xua摔jua拽       |
-| au   | /ɔ/    | lau拉dau大       |
-| iau  | /jɔ/   | jiau加xiau写     |
-| o    | /o/    | po怕to他         |
-| io   | /jo/   | yo哟yo唷         |
-| uo   | /wo/   | huo化kuo垮       |
-| iuo  | /ɥo/   | juo抓xuo耍       |
-| oo   | /ʊ/    | loo罗poo破       |
-| ei   | /e/    | fei非dei对       |
-| iei  | /je/   | yei液qiei且      |
-| uei  | /we/   | huei会kuei亏     |
-| iuei | /ɥe/   | xuei水quei吹     |
-| e    | /ɤ/    | ke烤se少         |
-| ie   | /jɤ/   | lie了xie小       |
-| er   | /ɚ/    | er而er儿         |
+<br>
 
 #### 阳声韵：
+<img src="vowel2.png" width="500">
 
-| 拼音 | 音标  | 例字             |
-|------|-------|------------------|
-| oon  | /ʊ̃/   | boon搬oon安      |
-| in   | /ĩ/   | yin盐tin天       |
-| iun  | /ỹ/   | yun元qun全liun乱 |
-| an   | /ɔ̃/   | pan办han咸       |
-| uan  | /wɔ̃/  | huan患kuan环     |
-| iuan | /ɥɔ̃/  | xuan拴、涮、赸   |
-| on   | /õ/   | fon放ton荡       |
-| ion  | /jõ/  | yon让、嚷、壤    |
-| uon  | /wõ/  | kuon狂huon皇     |
-| iuon | /ɥõ/  | juon装xuon双     |
-| ong  | /ʌŋ/  | tong动hong红     |
-| iong | /jʌŋ/ | qiong穷xiong胸   |
-| iein | /jẽ/  | niein娘qiein强   |
-| en   | /ɛ̃/   | den等pen喷       |
-| ien  | /jɛ̃/  | yen人、忍、任    |
-| uen  | /wɛ̃/  | guen滚huen婚     |
-| iuen | /ɥɛ̃/  | quen春juen尊     |
-| eng  | /ɘŋ/  | deng丁xreng星    |
-| ing  | /iŋ/  | ying影、迎、英   |
-| iung | /ɥŋ/  | qung群jung军     |
+<br>
 
 #### 入声韵：
 
-| 拼音 | 音标      | 例字         |
-|------|-----------|--------------|
-| ooq  | /ʊʔ/      | goog佮、搿   |
-| iq   | /iʔ/      | qig切tiq笛   |
-| iuq  | /yʔ/      | liuq律jug菊  |
-| aq   | /ɔʔ/      | bag八paq拔   |
-| iaq  | /jɔʔ/     | xiaq学jiag脚 |
-| uaq  | /wɔʔ/     | guag刮huaq滑 |
-| iuaq | /ɥɔʔ/     | xuaq刷       |
-| oq   | /oʔ/      | tog托soq熟   |
-| ioq  | /joʔ/     | yog疫yoq肉   |
-| uoq  | /woʔ/     | kuog扩huoq活 |
-| iuoq | /ɥoʔ/     | juog桌quog戳 |
-| eq   | /ɜʔ/&/ɘʔ/ | beg不qreg吃  |
-| ieq  | /jɜʔ/     | yeq日        |
-| ueq  | /wɜʔ/     | hueg忽gueg骨 |
-| iueq | /ɥɜʔ/     | xueq术queg出 |
+<img src="vowel3.png" width="500">
+
 
 注：南通话入声韵分阴入和阳入，阴入为中调，以g表示，阳入为高调，以q表示。

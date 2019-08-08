@@ -1,6 +1,6 @@
 ### Praat scripts
 
-Here are the scripts I used for my own research. Most of the scripts were taken from other researchers. I've modified of them to fit my needs. 
+Here are the scripts I used for my own research. Most of the scripts were taken from other researchers. I've modified some of them to fit my needs. 
 
 I backed up the files here just in case.
 

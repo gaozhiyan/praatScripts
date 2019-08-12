@@ -12,9 +12,9 @@ date$ = date$()
 
 #define parameters used in the script
 form analyse intervals
-	sentence Sound_folder ../audio
-	sentence TextGrid_folder ../audio
-	word Analysis_tier words	
+	sentence Sound_folder /Users/zhiyangao/Desktop/englishFiles/phrases/fivethick/male/
+	sentence TextGrid_folder /Users/zhiyangao/Desktop/englishFiles/phrases/fivethick/male/
+	word Analysis_tier phones
 	positive Time_step 0.01
 	boolean automatic_max_min yes
 	natural Min_pitch 60
@@ -93,9 +93,9 @@ procedure treatment
 			select myTextGrid
 			label$ = Get label of interval... tier iInterval
 			#type$ = Get label of interval... 2 iInterval
-			word$ = Get label of interval... 1 iInterval
-			start1 = Get starting point... 1 iInterval
-			end1 = Get end point... 1 iInterval
+			#word$ = Get label of interval... 1 iInterval
+			#start1 = Get starting point... 1 iInterval
+			#end1 = Get end point... 1 iInterval
 			start = Get starting point... tier iInterval
 			end = Get end point... tier iInterval
 			if label$ != "" and label$ != "_" and label$ != "#"
@@ -103,7 +103,7 @@ procedure treatment
 				item = item+1
 #duration
 				duration = 1000*(end - start)
-				duration1 = 1000*(end1 - start1)
+				#duration1 = 1000*(end1 - start1)
 				call set_undefined duration
 				duration$ = value$
 #pitch

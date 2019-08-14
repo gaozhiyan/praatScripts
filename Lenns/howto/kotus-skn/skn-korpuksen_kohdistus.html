@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<meta name="author" content="Mietta Lennes">
+<title>Kotuksen Suomen kielen näytteitä -korpuksen xml-muotoisten litteraattien kohdistaminen äänitiedostoihin</title></head><body>
+<h2>Kotuksen Suomen kielen näytteitä -korpuksen xml-muotoisten litteraattien kohdistaminen äänitiedostoihin</h2>
+
+<br>
+
+<p>Tällä sivulla on ohjeet Kotuksen SKN-korpuksen litteraattien ja niitä vastaavien äänitiedostojen kohdistamiseen.
+
+
+<h4><A HREF="http://orcid.org/0000-0003-4735-3017">Mietta Lennes</A> / FIN-CLARIN -projekti <br>17.6.2011</h4>
+<em>Kohdistusskriptin virheet korjattu 17.6.2011:<br>
+<ul>
+<li>Tiedoston ensimmäiselle virkkeelle tulee nyt aina oma alkuraja, jolloin koko ensimmäisen virkkeen voi tarvittaessa siirtää alkamaan myöhemmin (zoomaa ensin ulos Out-painikkeella). Tämä auttaa tilanteissa, joissa litterointi on aloitettu vasta jonkin matkaa äänitteen alun jälkeen.
+<li>Saman puhujan virkkeen ei enää pitäisi vahingossa tulla edellisen virkkeen sisälle.
+<li>Skripti valitsee automaattisesti viimeksi lisätyn virkkeen ja näyttää alueen sen ympäriltä. Virkkeen voi kuunnella välittömästi painamalla Tab-näppäintä (Praatin näppäinoikotie, joka soittaa valittuna olevan alueen). Soitto loppuu näppäimellä Esc.
+</ul>
+</em>
+
+<ul>
+<!--
+<li><A HREF="#esittely">Johdanto</A>
+<li><A HREF="#esimerkki">Esimerkki</a>
+<li><A HREF="#ohje">K&auml;ytt&ouml;ohje</a>
+-->
+</ul>
+
+<br><br>
+
+<h4>Ohjelmien asentaminen</h4>
+<ul>
+<li>Asenna koneellesi <A HREF="http://www.praat.org">Praat-ohjelma</A>. (Praatin asennus ei vaadi ylläpitäjän oikeuksia, joten sen voi kuka tahansa asentaa minne tahansa koska tahansa.)
+<li>Voit asentaa valmiiksi myös <A HREF="http://www.lat-mpi.eu/tools/elan/">Elan-ohjelman</A> (tässä vaiheessa Elan-ohje vielä puuttuu tältä sivulta). Kun äänitiedoston ja litteraatin kohdistus on tehty Praatilla, viedään tiedosto seuraavaksi Elan-formaattiin, jotta korpus myöhemmin toimii CSC:n Kielipankkiin asennetussa haku- ja selailuympäristössä (Annex ja Trova).
+<p>
+<li>Hae omalle koneellesi seuraavat Praat-skriptit (klikkaa hiiren oikealla napilla ja valitse <b>Save link as...</b>):
+<ul>
+<li><A HREF="mark_pauses.praat">mark_pauses.praat</A> (skripti jolla etsitään äänitiedostosta alustavasti hiljaisia ja äänekkäitä kohtia)
+<li><A HREF="label_sentences_from_text_file.praat">label_sentences_from_text_file.praat</A> (litteraatissa olevien virkkeiden kohdistustyökalu)
+</ul>
+</ul>
+
+
+<h4>Taukojen etsintä äänitiedostosta</h4>
+
+<ul>
+<li>Avaa Praat-ohjelma. 
+<li>Valitse Praatin objekti-ikkunassa <b>Open...: Open long sound file...</b> ja avaa äänitiedosto, johon ryhdyt kohdistamaan litteraattia.
+<li>Avaa Praatiin skriptitiedosto mark_pauses.praat (<b>Open...: Read from file...</b>) ja suorita se skripti-ikkunan komennolla <b>Run:Run</b>.
+<li>Skripti pysähtyy hetken kuluttua, jolloin voit välillä tarkistaa, kuinka taukoanalyysi onnistuu: Valitse objektilistalta yhtä aikaa sekä LongSound-objekti että
+sitä vastaava TextGrid-objekti ja paina <b>View & Edit</b>. Selaile äänitiedostoa. Jos xxx-merkittyjä taukoehdokkaita näyttää olevan liian tiheässä tai harvassa,
+keskeytä skriptin suoritus painamalla <b>Stop</b>. Valitse nyt uudestaan pelkkä LongSound-objekti ja suorita skripti uudestaan alusta saakka. Jos taukoja oli äsken liikaa,
+pienennä aloituslomakkeessa olevaa parametria <em>Maximum intensity (dB)</em> esimerkiksi yhdellä. Jos taas taukoja oli liian harvassa, nosta intensiteettirajaa vastaavasti yhdellä tai kahdella.
+Kokeile uudelleen. Toista tätä vaihetta tarvittaessa useita kertoja eri arvoilla. Optimaalinen intensiteettiraja voi olla erilainen eri äänitiedostoille.
+<li>Kun olet tyytyväinen lopputulokseen, paina Continue ja anna skriptin merkata loputkin tauot.
+<li>Tallenna lopputuloksena saatu TextGrid-tiedosto: Valitse TextGrid-objekti objektilistalta ja valitse <b>Save...: Save as short text file...</b>
+</ul>
+
+
+<h4>Praat-ohjelman asetukset</h4>
+<UL>
+<li>Kun ensimmäisen kerran avaat TextGrid-editorin, tarkista editori-ikkunasta seuraava asetus:<br>
+<b>File: Preferences...:</b> With the shift key, you drag... a single boundary<br>
+Tämä asetus helpottaa kohdistustyötä, koska eri kerroksissa samassa aikapisteessä olevat rajat siirtyvät automaattisesti yhtä aikaa, kun vedät yhtä niistä hiirellä.
+</ul>
+
+
+<h4>Litteraatin kohdistaminen</h4>
+
+<p>Huom. T&auml;ss&auml; kuvattu Praat-skripti on vasta testik&auml;yt&ouml;ss&auml; ja saattaa siis sis&auml;lt&auml;&auml; virheit&auml;! Jos skripti ei mielest&auml;si toimi oikein tai huomaat t&auml;ss&auml; ohjeessa puutteita, otan mielell&auml;ni vastaan korjausehdotuksia :-)
+
+<ul>
+<li>Tallenna äsken käsittelemääsi äänitiedostoa vastaava xml-muotoinen litteraatti nimellä <em>labels.xml</em> samaan hakemistoon, jossa ovat myös
+verkosta lataamasi Praat-skriptit. Varmista, että litteraatti on Unicode-muodossa (UTF-8)!
+<li>Avaa Praatilla skriptitiedosto label_sentences_from_text_file.praat (Open...: Read from file...)
+<li>Avaa Praatilla äskeinen äänitiedosto ja sille luomasi TextGrid. Tarkista, että ne ovat yhtä aikaa valittuna objektilistalla. 
+<li>Valitse sitten skripti-ikkunasta <b>Run:Run</b>.
+<li>Skripti lisää TextGridiin yksi kerrallaan intervalleja, jotka vastaavat xml-tiedostossa esiintyviä virkkeitä. Kunkin puhujan virkkeet tulevat omaan kerrokseensa (tier).
+Skripti "arvaa" taukoanalyysin perusteella puhetta sisältäviä pätkiä, joihin se ehdottaa virkkeitä. Sinun tehtävänäsi on tarkistaa kunkin virkkeen alku- ja loppurajat kuuntelemalla ja äänen aaltomuotoa katsomalla.
+<li>Skripti ehdottaa seuraavan virkkeen paikaksi sellaista alimmassa kerroksessa olevaa intervallia, jonka nimike ei ole "xxx" ja jonka päättymisaika on viimeiseksi päättyneen virkkeen päättymisajan jälkeen.
+<li>Skripti valitsee automaattisesti viimeksi lisätyn virkkeen ja näyttää alueen sen ympäriltä. Virkkeen voi kuunnella välittömästi painamalla Tab-näppäintä (Praatin näppäinoikotie, joka soittaa valittuna olevan alueen). Soitto loppuu näppäimellä Esc.
+<li>Vinkki: Vierekkäisten tai päällekkäisten intervallien/yksiköiden välillä voi liikkua nopeasti käyttämällä näppäinoikotietä Alt+nuolinäppäin.
+<li>Älä koske kahteen alimpaan kerrokseen (sentence_id ja utterance)! Skripti tarvitsee niitä toimiakseen.
+<li>Tässä vaiheessa riittää rajata karkeasti vain virkkeen alku ja loppu, vaikka virke sisältäisikin taukoja. 
+<li>Aina kun olet tyytyväinen edeltävän virkkeen rajaukseen, klikkaa Jatka.
+<li>Skripti tallentaa TextGrid-tiedoston automaattisesti kunkin virkkeen lisäyksen jälkeen.
+</ul>
+
+
+
+
+<ul>
+<li>(Myöhemmin on luvassa vielä yksi skripti, jolla lisätään automaattisesti kerrokset yksittäisille saneille ("normi" ja puhuttu muoto sekä näiden id-tagit). 
+Skripti suoritetaan vasta edellisen kohdistusvaiheen jälkeen. Ohje tulee tälle sivulle.)
+</ul>
+
+
+
+<br><br>
+<p>PS. Täältä löytyy myös se <A HREF="../keskustelun_litterointi.html">keskustelun litteraatin pulautusskripti ohjeineen...</a>
+
+<br>
+<br>
+<a href="../../index.html">Lis&auml;&auml; Praat-skriptej&auml;</a>
+<br>
+</body></html>

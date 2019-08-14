@@ -1,0 +1,48 @@
+# Generate Pitch object using utterance-specific thresholds
+# Using Hirst and Delooze's s two-pass method
+#
+# Modified from https://github.com/jjatria/plugin_jjatools
+#
+# Author: Jose Joaquin Atria
+# Last modified: October 21, 2014
+#
+# This script is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
+#
+# A copy of the GNU General Public License is available at
+# <http://www.gnu.org/licenses/>.
+
+procedure pitchTwoPass (.floor_factor, .ceiling_factor)
+  # Recommended values:
+  #   0.75 for floor factor
+  #   1.5 for ceiling factor (or 2.5 for expressive speech)
+
+  .sound = selected("Sound")
+
+  .floor = 60
+  .ceiling = 700
+
+  .first_pass = To Pitch: 0.01, .floor, .ceiling
+  .q1 = Get quantile: 0, 0, 0.25, "Hertz"
+  .q3 = Get quantile: 0, 0, 0.75, "Hertz"
+  removeObject: .first_pass
+
+  if .q1 != undefined
+    .floor = .q1 * .floor_factor
+  endif
+  .ceiling = if .q3 != undefined then .q3 * .ceiling_factor else .ceiling fi
+
+  .error = if .floor >= .ceiling then 1 else 0 fi
+
+  selectObject: .sound
+  .id = To Pitch: 0.01, .floor, .ceiling
+
+  # References:
+  # Hirst, 2011. "The analysis by synthesis [...]", JoSS 1(1): 55-83
+  # De Looze and Hirst, 2008. "Detecting changes in key [...]" @ Speech Prosody
+  # Based on scripts available at
+  # http://uk.groups.yahoo.com/neo/groups/praat-users/conversations/topics/6199
+  # http://celinedelooze.com/MyHomePage/Praat.html
+endproc

@@ -1,0 +1,41 @@
+include ../procedures/utils.proc
+
+if praatVersion < 5346
+  exit This script requires Praat v.5.3.46. Please update Praat.'newline$'
+endif
+
+procedure require (.version$)
+  @comparePraatVersionStrings(praatVersion$, .version$)
+  if comparePraatVersionStrings.newer > 0
+    exitScript("This script requires Praat v.", .version$, ". ",
+      ..."Please update Praat", newline$)
+  endif
+endproc
+
+procedure comparePraatVersionStrings (.a$, .b$)
+  if .a$ != .b$
+    @split(".", .a$)
+    for .i to 3
+      .a[.i] = if .i <= split.length then number(split.array$[.i]) else 0 fi
+    endfor
+
+    @split(".", .b$)
+    for .i to 3
+      .b[.i] = if .i <= split.length then number(split.array$[.i]) else 0 fi
+    endfor
+
+    for .i to 3
+      if .a[.i] > .b[.i]
+        .newer = -1
+        .i = 3
+      elsif .a[.i] < .b[.i]
+        .newer = 1
+        .i = 3
+      else
+        .newer = 0
+      endif
+    endfor
+  else
+    .newer = 0
+  endif
+endproc

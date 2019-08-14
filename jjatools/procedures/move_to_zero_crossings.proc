@@ -1,0 +1,117 @@
+# Move TextGrid time marks to nearest zero-crossings (procedure)
+#
+# Author: Jose Joaquin Atria
+#
+# This script is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
+#
+# A copy of the GNU General Public License is available at
+# <http://www.gnu.org/licenses/>.
+
+procedure moveToZeroCrossings (.tier, .max_shift)
+  .moved_items = 0
+
+  .sound = selected("Sound")
+  .textgrid = selected("TextGrid")
+
+  selectObject: .textgrid
+  .interval_tier = Is interval tier: .tier
+
+  # Process tier
+  if .interval_tier
+    .item$ = "interval"
+    .time_query$ = "Get end point..."
+    .delete_item$ = "Remove right boundary..."
+  else
+    .item$ = "point"
+    .time_query$ = "Get time of point..."
+    .delete_item$ = "Remove point..."
+  endif
+
+  .items = do("Get number of " + .item$ + "s...", .tier)
+  .last_item = if .interval_tier then .items-1 else .items fi
+
+  if .max_shift
+    for .item to .last_item
+
+      selectObject: .textgrid
+      .time = do(.time_query$, .tier, .item)
+
+      selectObject: .sound
+      .zero = Get nearest zero crossing: 1, .time
+
+      .error = 0
+        if .time != .zero and abs(.time - .zero) > .max_shift
+          exitScript: "Some time shifts larger than max (", .max_shit, ").",
+            ... "No changes made"
+        endif
+    endfor
+  endif
+
+  .max_shift = 0
+  for .item to .last_item
+    selectObject: .textgrid
+    .time = do(.time_query$, .tier, .item)
+
+    selectObject: .sound
+    .zero = Get nearest zero crossing: 1, .time
+
+    if .time != .zero
+      # appendInfo: "Shifting ", .time, " to ", .zero
+
+      .moved_items += 1
+      .shift = abs(.time - .zero)
+      .max_shift = if .shift > .max_shift then .shift else .max_shift fi
+
+      # appendInfoLine: " Shift:", .shift
+
+      selectObject: .textgrid
+      if .interval_tier
+        .label$[1] = Get label of interval: .tier, .item
+        .label$[2] = Get label of interval: .tier, .item+1
+
+        # If two boundaries share the same zero crossing, and one
+        # of them is _already_ at that zero-crossing, they are merged
+        .merge = 0
+        if .item != .zero
+          if .time < .zero
+            .boundary = Get end point: .tier, .item
+          elsif .time > .zero
+            .boundary = Get start point: .tier, .item
+          endif
+          .merge = if .boundary = .zero then 1 else .merge fi
+        endif
+		
+        Remove right boundary: .tier, .item
+        nocheck Insert boundary: .tier, .zero
+
+        .last_item -= if .merge then 1 else 0 fi
+		
+        Set interval text: .tier, .item,   .label$[1]
+        Set interval text: .tier, .item+1, .label$[2]
+      else
+        .label$ = Get label of point: .tier, .item
+
+        # If two points share the same zero crossing, and one
+        # of them is _already_ at that zero-crossing, they are merged
+        .merge = 0
+        if .item != .zero 
+          if .time < .zero
+            .boundary = Get time of point: .tier, .item
+          elsif .time > .zero
+            .boundary = Get time of point: .tier, .item+1
+          endif
+          .merge = if .boundary = .zero then 1 else .merge fi
+        endif   
+
+        Remove point: .tier, .item
+        nocheck Insert point: .tier, .zero, .label$
+
+        .last_item -= if .merge then 1 else 0 fi
+
+      endif
+    endif
+  endfor
+endproc

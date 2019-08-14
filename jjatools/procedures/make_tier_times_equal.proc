@@ -1,0 +1,61 @@
+# Equalise TextGrid tier durations (procedure)
+#
+# Praat allows for tiers of different durations to be merged into a single
+# annotation file. However, this is contrary to the expectations of most
+# scripts in existence. Since it is also hard to check whether a given TextGrid
+# will suffer from this, this script extends all tiers of insufficient length
+# until they reach the duration of the longest.
+#
+# Author: Jose Joaquin Atria
+# Initial release: October 24, 2014
+# Last modified:   October 24, 2014
+#
+# This script is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
+#
+# A copy of the GNU General Public License is available at
+# <http://www.gnu.org/licenses/>.
+
+procedure makeTierTimesEqual ()
+  .id       = selected("TextGrid")
+  .name$    = selected$("TextGrid")
+  .duration = Get total duration
+  .change   = 0
+
+  .tiers = Get number of tiers
+  for .t to .tiers
+    selectObject: .id
+    .tier[.t] = Extract one tier: .t
+    .tier_duration[.t] = Get total duration
+    if .tier_duration[.t] < .duration
+      .change = 1
+    endif
+    # End tier loop
+  endfor
+
+  if .change
+    for .t to .tiers
+      if .tier_duration[.t] < .duration
+        .delta = .duration - .tier_duration[.t]
+        Extend time: .delta, "End"
+      endif
+      # End tier loop
+    endfor
+
+    nocheck selectObject: undefined
+    for .t to .tiers
+      plusObject: .tier[.t]
+    endfor
+
+    .id =  Merge
+    Rename: .name$ + "_equalised"
+  endif
+
+  for .t to .tiers
+    removeObject: .tier[.t]
+  endfor
+
+  selectObject: .id
+endproc

@@ -1,0 +1,108 @@
+# To use these procedures as a standalone set (not as part
+# of the plugin) replace the following line:
+include ../procedures/selection.proc
+# with one like this one:
+# include .praat-dir/plugin_jjatools/procedures/selection.proc
+
+# @issueWarnings() will check to see if any warning flags have been
+# set, and if so, issue them. The benefit of this approach is that
+# similar warnings are only issued once.
+procedure issueWarnings ()
+#   appendInfoLine: "Issuing warnings"
+  .new = 1
+  if variableExists("issueWarnings.selected")
+    @isSelectionTable(issueWarnings.selected)
+    if isSelectionTable.return
+      .new = 0
+    endif
+  endif
+  
+  if .new
+    @saveSelectionTable()
+    .selected = saveSelectionTable.table
+  endif
+
+  
+  if variableExists("warning.table")
+    @_ObjectExists(warning.table)
+    if '_ObjectExists.return'
+      selectObject(warning.table)
+      .issued = nowarn Extract rows where column (number): "issued", "greater than", 0
+      .row = Get number of rows
+      for .i to .row
+        .warning$ = Get value: .i, "text"
+        appendInfoLine("W: ", .warning$)
+      endfor
+      removeObject(warning.table, .issued)
+    endif
+  else
+    @addWarning("NoWarningTable", "Warning table not found, created with this warning")
+    @warning("NoWarningTable")
+    @issueWarnings()
+  endif
+
+  @restoreSavedSelection(.selected)
+  if .new
+    removeObject(.selected)
+  else
+    .new = 1 - .new
+  endif
+endproc
+
+# Add warning codes and text to warning table
+procedure addWarning (.code$, .text$)
+#   appendInfoLine: "Added ", .code$, " to warning table"
+  @saveSelectionTable()
+  .selected = saveSelectionTable.table
+
+  if variableExists("warning.table")
+    @_ObjectExists(warning.table)
+    if '_ObjectExists.return'
+      nocheck selectObject(warning.table)
+    endif
+  endif
+  if !numberOfSelected("Table")
+    warning.table = Create Table with column names: "warnings", 0, "code text issued"
+  endif
+  
+  .row = Search column: "code", .code$
+  if .row
+    Set string value:  .row, "text",   .text$
+    Set numeric value: .row, "issued", 0
+  else
+    Append row
+    .row = Get number of rows
+    Set string value:  .row, "code",   .code$
+    Set string value:  .row, "text",   .text$
+    Set numeric value: .row, "issued", 0
+  endif
+  
+  @restoreSavedSelection(.selected)
+  removeObject(.selected)
+endproc
+
+# @warning(code) sets a flag for a specific warning
+procedure warning (.code$)
+#   appendInfoLine: "Flagged warning: ", .code$
+  @saveSelectionTable()
+  .selected = saveSelectionTable.table
+  
+  if variableExists("warning.table")
+    selectObject(.table)
+  else
+    @addWarning("NoWarningTable", "Warning table not found, created with this warning")
+    @warning("NoWarningTable")
+  endif
+
+  selectObject(.table)
+  .row = Search column: "code", .code$
+  if .row
+    Set numeric value: .row, "issued", 1
+  else
+    @addWarning("NoSuchWarning", "A warning has been issued for a non-existing code")
+    @warning("NoSuchWarning")
+  endif
+  
+  @restoreSavedSelection(.selected)
+  removeObject(.selected)
+endproc

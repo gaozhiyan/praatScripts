@@ -1,0 +1,93 @@
+# Detect non-overlapping intervals in a multi-tiered TextGrid (procedure)
+#
+# This procedure will generate a new TextGrid object with a single tier
+# containing intervals obtained by "flattening" those of all tiers in the
+# original TextGrid.
+#
+# Depending on the label of those intervals, it will be possible to determine
+# whether they were silent in the original (no label), whether they have an
+# overlap across tiers ("0" as the label), or whether they are a non-overlapping
+# interval, in which case the number of the tier to which they correspond will
+# be the label.
+#
+# Based on https://uk.groups.yahoo.com/neo/groups/praat-users/conversations/messages/6947
+#
+# Author: Jose Joaquin Atria
+# Initial release: October 24, 2014
+#
+# This script is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
+#
+# A copy of the GNU General Public License is available at
+# <http://www.gnu.org/licenses/>.
+
+procedure toNonOverlappingIntervals ()
+  # Original TextGrid
+  .tg = selected("TextGrid")
+  .tiers = Get number of tiers
+
+  .start = Get start time
+  .end = Get end time
+
+  # Overlap TextGrid
+  .id = Create TextGrid: .start, .end, "overlap", ""
+
+  # Populate overlap tier with "flattened" intervals from all tiers
+  for .tier to .tiers
+    selectObject: .tg
+    .intervals = Get number of intervals: .tier
+
+    for .interval to .intervals-1
+      selectObject: .tg
+      .end = Get end point: .tier, .interval
+      # We use nocheck because there might already be a boundary there
+      selectObject: .id
+      nocheck Insert boundary: 1, .end
+    endfor
+
+  endfor
+
+  # Cycle through the flattened intervals to check how many spoken intervals
+  # align with each. A segment in the overlap tier will be considered to have no
+  # overlap if and only if there is one tier with a speech labeled interval which
+  # coincides with it.
+
+  selectObject: .id
+  .flat_intervals = Get number of intervals: 1
+  for .interval to .flat_intervals
+    .start = Get start point: 1, .interval
+    .end = Get end point: 1, .interval
+    .midpoint = (.end - .start) / 2 + .start
+
+    # Count how many speakers are speaking over that flattened interval  
+    .speakers = 0
+    for .tier to .tiers
+      selectObject: .tg
+      .interval_number = Get interval at time: .tier, .midpoint
+      .label$ = Get label of interval: .tier, .interval_number
+      if .label$ != ""
+        # Increment the number of speakers for each labeled coinciding interval
+        # on any tier. We also save the tier number of the (last) speaker, so we
+        # know where to look for measurements later.
+        .speakers += 1
+        .speaker_tier = .tier
+      endif
+    endfor
+
+    # Label the overlap intervals. Blank intervals are matched by no speakers in
+    # any tier. Intervals labeled "0" are matched by more than one speaker, in
+    # more than one tier. The rest contain the tier number of the single speaker
+    # speaking at that time.
+    selectObject: .id
+    if .speakers = 1
+      Set interval text: 1, .interval, string$(.speaker_tier)
+    elif .speakers > 1
+      Set interval text: 1, .interval, "0"
+    else
+      Set interval text: 1, .interval, ""
+    endif
+  endfor
+
+endproc

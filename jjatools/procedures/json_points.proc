@@ -1,0 +1,97 @@
+procedure pointsToJson (.output_file$)
+  .type$ = extractWord$(selected$(), "")
+
+  if .type$ = "Intensity"
+    .items$ = "frames"
+    .items = Get number of frames
+    .time_query$ = "Get value in frame..."
+  else
+    .items$ = "points"
+    .items = Get number of points
+    .time_query$ = "Get time from index..."
+  endif
+  .list_name$ = .items$
+
+  if .items
+    @startJsonList(.output_file$, .list_name$)
+    for .i to .items
+      .last = if .i = .items then 1 else 0 fi
+      .time = do(.time_query$, .i)
+      @pushToJsonList(.output_file$, .time, .last)
+    endfor
+    @endJsonList(.output_file$, 1)
+  else
+    @writeJsonEmptyList(.output_file$, .list_name$, 1)
+  endif
+endproc
+
+procedure pointsWithNumbersToJson (.output_file$)
+  .type$ = extractWord$(selected$(), "")
+
+  # DurationTier objects had no query methods prior to 5.3.70
+  # We need to hack our way to the value of the duration points
+  .use_hack =
+    ... if praatVersion < 5370 and .type$ = "DurationTier" then 1 else 0 fi
+
+  .items$ = "points"
+  .items = Get number of points
+  .list_name$ = .items$
+
+  if .items
+    @startJsonList(.output_file$, .list_name$)
+
+    if .use_hack
+      @setUpDurationTierHack(selected())
+    endif
+
+    for .i to .items
+      .last = if .i = .items then 1 else 0 fi
+      .time = Get value at index: .i
+      if .use_hack
+        @queryDurationTierHack(selected(), .time)
+        .value = queryDurationTierHack.value
+      else
+        .value = Get value at index: .i
+      endif
+      @writeJsonPointWithNumber(.output_file$, .time, .value, .last)
+    endfor
+
+    if .use_hack
+      @cleanUpDurationTierHack(selected())
+    endif
+
+    @endJsonList(.output_file$, 1)
+  else
+    @writeJsonEmptyList(.output_file$, .list_name$, 1)
+  endif
+endproc
+
+# Hack to query DurationTier objects for Praat <5.3.70
+procedure setUpDurationTierHack (.id)
+  .full = Copy: "full"
+  .blank = Copy: "blank"
+  .points = Get number of points
+  for .p to .points
+    .time = Get time from index: .p
+    selectObject(.blank)
+    Remove point: .p
+    Add point: .p, 1
+    selectObject(.id)
+  endfor
+endproc
+
+procedure queryDurationTierHack (.id, .time)
+  selectObject(setUpDurationTierHack.full)
+  .new_duration = Get target duration: 0, .time
+  Remove point: 1
+  selectObject(setUpDurationTierHack.blank)
+  .old_duration = Get target duration: 0, .time
+  .value = .new_duration / .old_duration
+  Remove point: 1
+  selectObject(.id)
+endproc
+
+procedure cleanUpDurationTierHack (.id)
+  removeObject(setUpDurationTierHack.full, setUpDurationTierHack.blank)
+  selectObject(.id)
+endproc

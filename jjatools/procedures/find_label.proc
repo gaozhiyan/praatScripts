@@ -1,0 +1,85 @@
+# Find TextGrid label from either start or end
+#
+# Author:  Jose Joaquin Atria
+# Initial release: October 24, 2014
+# Last modified:   October 24, 2014
+#
+# This script is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
+#
+# A copy of the GNU General Public License is available at
+# <http://www.gnu.org/licenses/>.
+
+procedure _findLabel (.tier, .target$, .from, .to)
+  .interval = Is interval tier: .tier
+  .type$ = if .interval then "interval" else "point" fi
+  .total = do("Get number of " + .type$ + "s...", .tier)
+
+  .forward = if .from <= .to then 1 else 0 fi
+
+  if .forward
+    assert .from >= 1
+    assert .to   <= .total
+
+    .start = .from
+    .end   = .to
+  else
+    assert .to   >= 1
+    assert .from <= .total
+    .start = (.total + 1) - .from
+    .end   = (.total + 1) - .to
+  endif
+
+  .return = 0
+  for .j from .start to .end
+    .i = if .forward then .j else .total - (.j - 1) fi
+
+    .label$ = do$("Get label of " + .type$ + "...", .tier, .i)
+    if .label$ = .target$
+      .return = .i
+      .j += .end
+    endif
+  endfor
+endproc
+
+procedure findLabel (.tier, .target$)
+  .interval = Is interval tier: .tier
+  .type$ = if .interval then "interval" else "point" fi
+  .total = do("Get number of " + .type$ + "s...", .tier)
+
+  @_findLabel(.tier, .target$, 1, .total)
+  .return = '_findLabel.return'
+endproc
+
+procedure findNthLabel (.tier, .target$, .index)
+  .interval = Is interval tier: .tier
+  .type$ = if .interval then "interval" else "point" fi
+  .total = do("Get number of " + .type$ + "s...", .tier)
+
+  .from = 1
+  for .i to .index
+    @_findLabel(.tier, .target$, .from, .total)
+    .from = '_findLabel.return'
+  endfor
+  .return = '_findLabel.return'
+endproc
+
+procedure findFromStart (.tier, .target$, .after)
+  .interval = Is interval tier: .tier
+  .type$ = if .interval then "interval" else "point" fi
+  .total = do("Get number of " + .type$ + "s...", .tier)
+
+  @_findLabel(.tier, .target$, .after, .total)
+  .return = '_findLabel.return'
+endproc
+
+procedure findFromEnd (.tier, .target$, .before)
+  .interval = Is interval tier: .tier
+  .type$ = if .interval then "interval" else "point" fi
+  .total = do("Get number of " + .type$ + "s...", .tier)
+
+  @_findLabel(.tier, .target$, .total - (.before - 1), 1)
+  .return = '_findLabel.return'
+endproc

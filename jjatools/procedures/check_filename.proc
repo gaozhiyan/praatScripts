@@ -1,0 +1,8 @@
+procedure checkFilename (.name$, .label$)
+  if .name$ = ""
+    .name$ = chooseReadFile$(.label$)
+  endif
+  if .name$ = ""
+    exit
+  endif
+endproc

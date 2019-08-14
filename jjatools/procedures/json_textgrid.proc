@@ -1,0 +1,85 @@
+procedure textGridToJson (.output_file$)
+  if !selected("TextGrid")
+    exitScript: "No TextGrid selected"
+  endif
+
+  @startJsonList(.output_file$, "tiers")
+
+  .tiers = Get number of tiers
+  for .t to .tiers
+    .last = if .t = .tiers then 1 else 0 fi
+    @writeJsonTgTier(.output_file$, .t, .last)
+  endfor
+
+  @endJsonList(.output_file$, 1)
+endproc
+
+# Write TextGrid tier to JSON file
+procedure writeJsonTgTier (.out$, .tier, .last_tier)
+  if !numberOfSelected("TextGrid")
+    exitScript: "Can't write JSON TextGrid tier of non-TextGrid object"
+  endif
+
+  .interval = Is interval tier: .tier
+  .tier_type$ = if .interval then "IntervalTier" else "TextTier" fi
+  .tier_name$ = Get tier name: .tier
+
+  .tier_start = Get start time
+  .tier_end = Get end time
+
+  @startJsonObject(.out$)
+  @writeJsonString(.out$, "class", .tier_type$, 0)
+  @writeJsonString(.out$, "name", .tier_name$, 0)
+  @writeJsonNumber(.out$, "start", .tier_start, 0)
+  @writeJsonNumber(.out$, "end", .tier_end, 0)
+
+  .items_name$ = if .interval then "intervals" else "points" fi
+
+  if .interval
+    .items = Get number of intervals: .tier
+  else
+    .items = Get number of points: .tier
+  endif
+
+  # Empty tier
+  if !.items
+    if .interval
+      # Write empty interval spanning entire tier
+      @startJsonList(.out$, .items_name$)
+      @writeJsonIntervalWithLabel(.out$, .tier_start, .tier_end, "", 1)
+    else
+      # Write empty points list
+      @writeJsonEmptyList(.out$, .items_name$, 1)
+    endif
+  else
+    @startJsonList(.out$, .items_name$)
+
+    for .i to .items
+      .last = if .i = .items then 1 else 0 fi
+      if .interval
+        .label$ = Get label of interval: .tier, .i
+        .start = Get start point: .tier, .i
+        .end = Get end point: .tier, .i
+        @writeJsonIntervalWithLabel(.out$, .start, .end, .label$, .last)
+      else
+        .label$ = Get label of point: .tier, .i
+        .time = Get time of point: .tier, .i
+        @writeJsonPointWithLabel(.out$, .time, .label$, .last)
+      endif
+    endfor
+
+    @endJsonList(.out$, 1)
+
+  endif
+
+  @endJsonObject(.out$, .last_tier)
+endproc
+
+# Write TextGrid interval to JSON file
+procedure writeJsonIntervalWithLabel (.out$, .start, .end, .label$, .last)
+  @startJsonObject(.out$)
+  @writeJsonNumber(.out$, "start", .start, 0)
+  @writeJsonNumber(.out$, "end", .end, 0)
+  @writeJsonString(.out$, "label", .label$, 1)
+  @endJsonObject(.out$, .last)
+endproc

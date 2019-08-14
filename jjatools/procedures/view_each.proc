@@ -1,0 +1,109 @@
+# View each selected Sound (and TextGrid) object in turn
+#
+# The script allows for easy navigation between selected Sound
+# objects, which is particularly useful when comparing specific
+# features in each of them. If an equal number of TextGrid and
+# Sound objects have been selected, they will be paired by name
+# and viewed in unison.
+#
+# Written by Jose J. Atria (October 14, 2012)
+# Last revision: July 10, 2014)
+#
+# This script is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
+#
+# A copy of the GNU General Public License is available at
+# <http://www.gnu.org/licenses/>.
+
+include ../../plugin_jjatools/procedures/selection.proc
+
+procedure viewEach (.base, .pair, .i, .n)
+  selectObject: .base
+  .base_type$ = extractWord$(selected$(), "")
+  .base_name$ = selected$(.base_type$)
+
+  if .pair != undefined and .pair
+    selectObject: .pair
+    .pair_type$ = extractWord$(selected$(), "")
+    .pair_name$ = selected$(.pair_type$)
+
+    selectObject: .base, .pair
+  endif
+
+  if .base_type$ = "LongSound"
+    View
+  else
+    View & Edit
+  endif
+
+  nocheck editor '.editor_name$'
+    # Hook right after opening the editor
+    @inEditor()
+    if inEditor.return
+      @viewEach_atBeginEditor()
+    endif
+  nocheck endeditor
+
+  @viewEach_pause()
+
+  # If objects are renamed while viewing each, editors are
+  # not closed properly. Attempted to solve
+  # this, but it didn't work. Why?
+
+  if .pair != undefined and .pair
+    nocheck selectObject: .base, .pair
+    .editor_name$ = if numberOfSelected(.pair_type$) then
+      ... .pair_type$ + " " + selected$(.pair_type$) else "" fi
+  else
+    nocheck selectObject: .base
+    .editor_name$ = if numberOfSelected(.base_type$) then
+      ... .base_type$ + " " + selected$(.base_type$) else "" fi
+  endif
+
+  nocheck editor '.editor_name$'
+    # Hook within editor, after the pause
+    @inEditor()
+    if inEditor.return
+      @viewEach_atEndEditor()
+    endif
+  nocheck endeditor
+
+  # Hook called after atEndEditor, which might not be in an editor
+  @viewEach_afterEndEditor()
+endproc
+
+# Hooks
+# A previously existing definition of these procedures
+# will get executed for every iteration of the script.
+procedure viewEach_atBeginEditor ()
+endproc
+
+procedure viewEach_cleanUp ()
+endproc
+
+procedure viewEach_atEndEditor ()
+  Close
+endproc
+
+procedure viewEach_afterEndEditor ()
+endproc
+
+procedure viewEach_pause ()
+  beginPause: "Viewing " + viewEach.base_name$ + " " +
+    ... "(" + string$(viewEach.i) + " of " + string$(viewEach.n) + ")"
+
+  if viewEach.i > 1
+    .button = endPause: "Stop", "Previous", if viewEach.i = viewEach.n then
+      ... "Finish" else "Next" fi, 3, 1
+  else
+    .button = endPause: "Stop", if viewEach.i = viewEach.n then 
+      ... "Finish" else "Next" fi, 2, 1
+  endif
+endproc
+
+procedure inEditor ()
+  .info$ = nocheck Editor info
+  .return = if .info$ = "" then 0 else 1 fi
+endproc

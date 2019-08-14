@@ -1,0 +1,120 @@
+json.indent_level = 0
+json.indent$ = ""
+if !variableExists("json.n$") 
+  json.n$ = newline$
+endif
+
+if !variableExists("json.t$") 
+  json.t$ = tab$
+endif
+
+if !variableExists("json.s$") 
+  json.s$ = " "
+endif
+
+# Write [Pitch]Tier Point to JSON file
+procedure writeJsonPointWithNumber (.out$, .time, .value, .last)
+  @startJsonObject(.out$)
+  @writeJsonNumber(.out$, "time", .time, 0)
+  @writeJsonNumber(.out$, "value", .value, 1)
+  @endJsonObject(.out$, .last)
+endproc
+
+# Write TextGrid point to JSON file
+procedure writeJsonPointWithLabel (.out$, .time, .label$, .last)
+  @startJsonObject(.out$)
+  @writeJsonNumber(.out$, "time", .time, 0)
+  @writeJsonString(.out$, "label", .label$, 1)
+  @endJsonObject(.out$, .last)
+endproc
+
+# Append to list in JSON file
+procedure pushToJsonList (.out$, .n, .last)
+  .e$ = if .last then "" else "," fi
+  appendFile(.out$, json.indent$, .n, .e$, json.n$)
+endproc
+
+# Write string attribute to JSON file
+procedure writeJsonString (.out$, .name$, .value$, .last)
+  .closing$ = if .last then "" else "," fi
+  @sanitizeJsonString(.value$)
+  .value$ = sanitizeJsonString.str$
+  appendFile(.out$,
+    ...json.indent$, """", .name$, """:", json.s$, """", .value$, """", .closing$, json.n$)
+endproc
+
+# Write numeric attribute to json file
+procedure writeJsonNumber (.out$, .name$, .value, .last)
+  .closing$ = if .last then "" else "," fi
+  appendFile(.out$,
+    ...json.indent$, """", .name$, """:", json.s$, .value, .closing$, json.n$)
+endproc
+
+# Write boolean attribute to JSON file
+procedure writeJsonBoolean (.out$, .name$, .value, .last)
+  .closing$ = if .last then "" else "," fi
+  .value$ = if .value = 1 then "true" else "false" fi
+  appendFile(.out$,
+    ...json.indent$, """", .name$, """:", json.s$, .value$, .closing$, json.n$)
+endproc
+
+# Write an empty list to JSON file
+procedure writeJsonEmptyList (.out$, .name$, .last)
+  .closing$ = if .last then "]" else "]," fi
+  appendFile(.out$,
+  ...json.indent$, """", .name$, """:", json.s$, "[", .closing$, json.n$)
+endproc
+
+# Start a new JSON object
+procedure startJsonObject (.out$)
+  appendFile(.out$,
+    ...json.indent$, "{", json.n$)
+  @setJsonIndent(json.indent_level+1)
+  json.indent$ = setJsonIndent.indent$
+endproc
+
+# End a JSON object
+procedure endJsonObject (.out$, .last)
+  .closing$ = if .last then "}" else "}," fi
+  @setJsonIndent(json.indent_level-1)
+  json.indent$ = setJsonIndent.indent$
+  appendFile(.out$,
+    ...json.indent$, .closing$, json.n$)
+endproc
+
+# Start a JSON list
+procedure startJsonList (.out$, .name$)
+  appendFile(.out$,
+    ...json.indent$, """", .name$, """:", json.n$,
+    ...json.indent$, "[", json.n$)
+  @setJsonIndent(json.indent_level+1)
+  json.indent$ = setJsonIndent.indent$
+endproc
+
+# End a JSON list
+procedure endJsonList (.out$, .last)
+  .closing$ = if .last then "]" else "]," fi
+  @setJsonIndent(json.indent_level-1)
+  json.indent$ = setJsonIndent.indent$
+  appendFile(.out$,
+    ...json.indent$, .closing$, json.n$)
+endproc
+
+# Set indent level
+procedure setJsonIndent (.n)
+  json.indent_level = .n
+  .indent$ = ""
+  if format$ != "Minified"
+    for .i to .n
+      .indent$ = .indent$ + tab$
+    endfor
+  endif
+endproc
+
+# Sanitise string for JSON output
+procedure sanitizeJsonString (.str$)
+  .str$ = replace$(.str$, """",     "\""", 0)
+  .str$ = replace$(.str$, "\",      "\\",  0)
+  .str$ = replace$(.str$, tab$,     "\t",  0)
+  .str$ = replace$(.str$, newline$, "\n",  0)
+endproc

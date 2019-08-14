@@ -1,0 +1,142 @@
+# Extremely limited version of pwgen(1), the 
+#
+# Usage:
+#  include /path/to/this/script.praat
+#  [code]
+#  @split (SEPARATOR, STRING)
+#  for i to split.length
+#    str$[i] = split.return$[i]
+#  endfor
+#
+# where SEPARATOR is a separator string and STRING is a string to
+# separate.
+#
+# If string$ = "hello world", then after
+# @split (" ", string$)
+# split.return$[1] contains "hello" and split.return$[2] contains "world"
+#
+# Since .length stores the number of items separated by a string, it is always
+# larger than the amount of occurences of that string by one, which means
+# it can be used to count occurences as well.
+#
+procedure pwgen (.length)
+  @rndstr(.length, "a1")
+  .return$ = rndstr.return$
+endproc
+
+procedure rndstr (.length, .charset$)
+  .charset$ = if .charset$ = "" then "a1" else .charset$ fi
+  .char$ = ""
+  if index(.charset$, "a")
+    .char$ = .char$ + "abcdefghijkmlnopqrstuvwxyz"
+  endif
+  if index(.charset$, "A")
+    .char$ = .char$ + "ABCDEFGHIJKMLNOPQRSTUVWXYZ"
+  endif
+  if index(.charset$, "1")
+    .char$ = .char$ + "0123456789"
+  endif
+  if index(.charset$, "%")
+    .char$ = .char$ + "!?@#$%&+_"
+  endif
+
+  .return$ = ""
+  for .i to .length
+    .return$ = .return$ + mid$(.char$, randomInteger(1, length(.char$)), 1)
+  endfor
+endproc
+
+# Split .str$ on .sep$ and store each found element in .array$ and
+# length of .array$ in .length
+#
+# Usage:
+#  include /path/to/this/script.praat
+#  [code]
+#  @split (SEPARATOR, STRING)
+#  for i to split.length
+#    str$[i] = split.return$[i]
+#  endfor
+#
+# where SEPARATOR is a separator string and STRING is a string to
+# separate.
+#
+# If string$ = "hello world", then after
+# @split (" ", string$)
+# split.return$[1] contains "hello" and split.return$[2] contains "world"
+#
+# Since .length stores the number of items separated by a string, it is always
+# larger than the amount of occurences of that string by one, which means
+# it can be used to count occurences as well.
+#
+procedure split (.sep$, .str$)
+  .seplen = length(.sep$) 
+  .length = 0
+  repeat
+    .strlen = length(.str$)
+    .sep = index(.str$, .sep$)
+    if .sep > 0
+      .part$ = left$(.str$, .sep-1)
+      .str$ = mid$(.str$, .sep+.seplen, .strlen)
+    else
+      .part$ = .str$
+    endif
+    .length = .length+1
+    .return$[.length] = .part$
+
+    # For backwards compatibility only! Will disappear!
+    .array$[.length] = .part$
+  until .sep = 0
+endproc
+
+procedure numchar (.str$, .tgt$)
+  .pos = index(.str$, .tgt$)
+  if .pos
+    .return = 1
+    .strlen = length(.str$)
+    .tgtlen = length(.tgt$)
+    while .pos
+      .substr$ = right$(.str$, .pos)
+      .pos = index(.substr$, .tgt$)
+      .return = if .pos then .return + 1 else .return fi
+    endwhile
+  else
+    .return = 0
+  endif
+endproc
+
+procedure mktemp (.template$)
+  if .template$ = ""
+    .template$ = "tmp.XXXXXXXXXX"
+  endif
+
+  .number = index_regex(.template$, "X{3}$")
+  .name$ = undefined
+  if .number
+    .number = index_regex(.template$, "X+$")
+    .attempts = 0
+    .base$ = left$(.template$, .number - 1)
+    .random_length = length(.template$) - (.number - 1)
+
+    appendInfoLine: "mktemp with ", .base$, " and ", .random_length, " random characters"
+    repeat
+      .attempts += 1
+      @pwgen(.random_length)
+      .name$ = .base$ + pwgen.return$
+    until .attempts > 100 or !fileReadable(.name$)
+
+    createDirectory: .name$
+  else
+    pauseScript: "Template must have at least three random placeholders at end."
+  endif
+endproc
+
+procedure zeropad (.n, .length)
+  .n$ = string$(abs(.n))
+  .sign$ = if .n < 0 then "-" else "" fi
+  .pad$ = ""
+  for .i to .length
+    .pad$ = .pad$ + "0"
+  endfor
+  .return$ = .sign$ + right$(.pad$ + .n$, .length)
+endproc
+

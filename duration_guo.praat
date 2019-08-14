@@ -1,4 +1,5 @@
-
+###scripts for Yuting Guo's projects
+###Zhiyan Gao, June 2019
 
 form get duration
 comment Enter sound and textgrid directory

@@ -15,7 +15,7 @@ firstnewline = 0
 oldlabel$ = ""
 newlabel$ = ""
 
-filename$ = "/home/lennes/labels.txt"
+filename$ = "/Users/zhiyangao/Desktop/sixspoons.txt"
 tier = 1 
 starting_interval = 1 
 overwrite = 1

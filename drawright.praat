@@ -16,7 +16,7 @@ form Build your pretty picture
         button Draw
         button Speckle
    comment Spectrogram
-      real dynamic_range 40
+      real dynamic_range 50
       real pre-emphasis 6
 endform
  
@@ -34,16 +34,16 @@ if plot_pitch = 1 and plot_intensity = 0 and paint_spectrogram = 0 or plot_pitch
    Times
    Line width... 1
    ###Erase all
-   Viewport... 4.5 9 0 4
+   Viewport... 0 9 0 4
 # gets the textgrid and draws it
    select TextGrid 'name$'
    Line width... 1
    Draw... 0 0 yes yes yes
-   Viewport... 4.5 9 2.8 3.3
+   Viewport... 0 9 2.8 3.3
 # gets the sound and draws it
    select Sound 'name$'
    Draw... 0 0 0 0 no
-   Viewport... 4.5 9 0 2.8
+   Viewport... 0 9 0 2.8
 # gets the intensity and draws it, if selected in the form
 if plot_intensity = 1 
    select Intensity 'name$'
@@ -95,25 +95,25 @@ elsif plot_pitch = 1 and plot_intensity = 0 and paint_spectrogram = 1 or plot_pi
    Times
    Line width... 1
    #Erase all
-   Viewport... 0 4.5 0 3.0
+   Viewport... 0 9 0 3.0
 #does spectrogram
    select Spectrogram 'name$'
    Paint... 0 0 0 0 100 yes 'dynamic_range' 'pre-emphasis' 0 no
    One mark left... 5000 yes yes no
    Draw inner box
-   Text left... yes Spectrogram (Hz)
-   Text top... yes Native production
+   Text left... yes Pitch (Hz)
+   Text top... yes L2 Production "ask her"
 # gets the textgrid and draws it
-   Viewport... 0 4.5 1.9 5.00
+   Viewport... 0 9 1.9 5.00
    select TextGrid 'name$'
    Line width... 1
    Draw... 0 0 yes yes yes
 # gets the sound and draws it
-   Viewport... 0 4.5 1.52 4.5
+   Viewport... 0 9 1.52 4.5
    select Sound 'name$'
   # Draw... 0 0 0 0 no
 # gets the intensity and draws it, if selected in the form
-   Viewport... 0 4.5 1.9 4.2
+   Viewport... 0 9 1.9 4.2
    Line width... 2
 if plot_intensity = 1 
    select Intensity 'name$'
@@ -144,7 +144,7 @@ if plot_pitch = 1
       One logarithmic mark left... 'medianpitch' no no yes
    endif
    #Draw inner box
-   Text left... yes Pitch (Hz)
+   Text left... yes Spectrogram (Hz)
 endif
 # gets the spectrogram and paints it, if selected in the form
    Viewport... 0 9 0 5

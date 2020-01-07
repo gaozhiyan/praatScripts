@@ -102,7 +102,7 @@ elsif plot_pitch = 1 and plot_intensity = 0 and paint_spectrogram = 1 or plot_pi
    One mark right... 5000 yes yes no
    Draw inner box
    Text right... yes Spectrogram (Hz)
-   Text top... yes Nonnative production
+   Text top... yes L2 production
 # gets the textgrid and draws it
    Viewport... 4.5 9 1.9 5.00
    select TextGrid 'name$'
@@ -114,7 +114,7 @@ elsif plot_pitch = 1 and plot_intensity = 0 and paint_spectrogram = 1 or plot_pi
   # Draw... 0 0 0 0 no
 # gets the intensity and draws it, if selected in the form
    Viewport... 4.5 9 1.9 4.2
-   Line width... 2
+   Line width... 1
 if plot_intensity = 1 
    select Intensity 'name$'
    Line width... 1

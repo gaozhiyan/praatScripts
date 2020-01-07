@@ -6,9 +6,9 @@
 
 form Pitch track file information
 	comment Enter directory where soundfiles and textgrids are located
-	text inFolder C:\Users\George\Desktop\TonePerception\audio\
+	text inFolder /Users/zhiyangao/Desktop/ken/
 	comment Full path of the resulting text file
-	text resultfile C:\Users\George\Desktop\TonePerception\audio\test2.txt
+	text resultfile /Users/zhiyangao/Desktop/ken/test2.txt
 endform
 
 #Check if the result file exists:
@@ -42,6 +42,10 @@ for i from 1 to numFiles
 #### Smooth pitch contour
 	Smooth: 15
 
+### get formats
+	select Sound 'fileNameShort$'
+	To Formant (burg)... 0.01 5 5500 0.025 50
+
 #### Extract pitch information at each 1/100 of the phrase
 	phraseduration = 0.31
 	totalpoint=phraseduration*100
@@ -51,8 +55,9 @@ for i from 1 to numFiles
 		for k from 1 to totalpoint
 			select Pitch 'fileNameShort$'
 			f0 = Get value at time: pitchpoint, "semitones re 1 Hz", "Linear"
+			f2 = Get value at time... 2 pitchpoint, "Hertz", "Linear"
 			pitch = Get value at time: pitchpoint, "Hertz", "Linear"
-			resultline$ = "'fileNameShort$' 'tab$' 'phraseduration' 'tab$' 'pitchpoint''tab$' 'k''tab$' 'f0' 'tab$''pitch''tab$''newline$'"
+			resultline$ = "'fileNameShort$' 'tab$' 'phraseduration' 'tab$' 'pitchpoint''tab$' 'k''tab$' 'f0' 'tab$''pitch''tab$' 'tab$''f2''newline$'"
             fileappend "'resultfile$'" 'resultline$'
 			pitchpoint = startphrase+(k*phrasediv)
 		endfor
